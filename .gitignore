@@ -1,6 +1,3 @@
 venv
 .pdm-python
 .vscode
-
-main.yml
-inventory.yml

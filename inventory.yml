@@ -1,0 +1,5 @@
+vms:
+  hosts:
+    pi:
+      ansible_user: "ryan"
+      ansible_host: cloudfront.cloud-vii.net

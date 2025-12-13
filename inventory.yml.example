@@ -1,5 +1,0 @@
-vms:
-  hosts:
-    pi:
-      ansible_user: "<USER>"
-      ansible_host: 192.168.0.101
