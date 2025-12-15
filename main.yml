@@ -2,25 +2,23 @@
   hosts: vms
   vars:
     swap_size_mb: 1024
-    git_user_email: "<email>"
-    git_user_name: "<name>"
+    git_user_email: "ryanrod@vt.edu"
+    git_user_name: "Ryan Rodriguez"
     tailscale_authkey: "<auth_key>"
     tailscale_args: "--advertise-routes=192.168.0.0/24 --advertise-exit-node"
     airsane_build_dir: "{{ ansible_env.HOME }}/Projects/AirSane-build/"
     usb_device_path: "/dev/sda1"
     usb_mount_path: "/media/usb-drive"
+    docker_base_dir: /opt/docker-apps
 
-  roles:
-    - role: artis3n.tailscale.machine
+  #roles:
+  #  - role: artis3n.tailscale.machine
 
   tasks:
+
     - name: Initial setup
       ansible.builtin.include_tasks:
         file: tasks/initial_setup.yml
-
-    - name: SWAP
-      ansible.builtin.include_tasks:
-        file: tasks/swap.yml
 
     - name: GIT
       ansible.builtin.include_tasks:
@@ -34,27 +32,32 @@
       ansible.builtin.include_tasks:
         file: tasks/pyenv.yml
 
-    - name: CUPS
-      ansible.builtin.include_tasks:
-        file: tasks/cups.yml
-
-    - name: AirSane
-      ansible.builtin.include_tasks:
-        file: tasks/airsane.yml
-
     - name: Docker
       ansible.builtin.include_tasks:
         file: tasks/docker.yml
-# ========== OPTIONAL ==================
 
-#    - name: ZeroTier
-#      ansible.builtin.include_tasks:
-#        file: tasks/zerotier.yml
+    - name: Docker Compose Apps
+      ansible.builtin.include_tasks:
+        file: tasks/docker-apps.yml
 
-#    - name: Docker to USB
-#      ansible.builtin.include_tasks:
-#        file: tasks/docker_to_usb.yml
+#   Unused
 
-#    - name: Personal projects
-#      ansible.builtin.include_tasks:
-#        file: tasks/projects.yml
+    # - name: ZeroTier
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/zerotier.yml
+
+    # - name: Docker to USB
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/docker_to_usb.yml
+
+    # - name: Personal projects
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/projects.yml
+
+    #    - name: CUPS
+    #      ansible.builtin.include_tasks:
+    #        file: tasks/cups.yml
+
+    #    - name: AirSane
+    #      ansible.builtin.include_tasks:
+    #        file: tasks/airsane.yml

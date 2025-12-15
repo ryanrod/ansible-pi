@@ -6,7 +6,7 @@
     insertafter: "^Include /etc/ssh/sshd_config"
     block: |
       Protocol 2
-      PasswordAuthentication no
+      PasswordAuthentication yes
       PermitEmptyPasswords no
       PermitRootLogin no
       MaxAuthTries 3
@@ -31,6 +31,7 @@
   debug:
     msg: "{{ ssh_key.stdout }}"
 
-- pause:
-    prompt: "Please enter the above ssh public key to GitHub and then press a key"
-    echo: yes
+# TODO: uncomment
+# - pause:
+#     prompt: "Please enter the above ssh public key to GitHub and then press a key"
+#     echo: yes

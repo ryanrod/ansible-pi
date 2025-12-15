@@ -2,4 +2,4 @@ vms:
   hosts:
     pi:
       ansible_user: "ryan"
-      ansible_host: cloudfront.cloud-vii.net
+      ansible_host: gnome.cloud-vii.net

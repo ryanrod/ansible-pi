@@ -13,11 +13,14 @@
     pkg:
       - git
       - sqlite3
+      - ca-certificates
+      - curl
+      - gnupg
 
-- name: Crontab - setup update and upgrade
-  become: true
-  cron:
-    name: "Update and upgrade"
-    minute: "0"
-    hour: "5"
-    job: "apt update -q -y && apt dist-upgrade -q -y"
+# - name: Crontab - setup update and upgrade
+#   become: true
+#   cron:
+#     name: "Update and upgrade"
+#     minute: "0"
+#     hour: "5"
+#     job: "apt update -q -y && apt dist-upgrade -q -y"

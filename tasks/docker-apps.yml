@@ -1,0 +1,27 @@
+- name: Create base service directory
+  file:
+    path: "{{ docker_base_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+  become: true
+
+- name: Copy docker-compose file
+  copy:
+    src: docker/docker-compose.yml
+    dest: "{{ docker_base_dir }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Create persistent data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ docker_base_dir }}/homeassistant"
+    - "{{ docker_base_dir }}/pihole/etc-pihole"
+    - "{{ docker_base_dir }}/pihole/etc-dnsmasq.d"
+    - "{{ docker_base_dir }}/jellyfin/config"
+    - "{{ docker_base_dir }}/jellyfin/cache"
+    - "{{ docker_base_dir }}/jellyfin/media"
