@@ -1,3 +1,5 @@
 venv
 .pdm-python
 .vscode
+
+files/.env
