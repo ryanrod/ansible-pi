@@ -7,12 +7,6 @@
     mode: "0755"
   become: true
 
-- name: Copy docker-compose file
-  copy:
-    src: docker/docker-compose.yml
-    dest: "{{ docker_base_dir }}/docker-compose.yml"
-    mode: "0644"
-
 - name: Create persistent data directories
   file:
     path: "{{ item }}"
@@ -25,3 +19,28 @@
     - "{{ docker_base_dir }}/jellyfin/config"
     - "{{ docker_base_dir }}/jellyfin/cache"
     - "{{ docker_base_dir }}/jellyfin/media"
+    - "{{ docker_base_dir }}/traefik"
+
+- name: Copy docker-compose file
+  copy:
+    src: files/docker-compose.yml
+    dest: "{{ docker_base_dir }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Copy .env
+  copy:
+    src: files/.env
+    dest: "{{ docker_base_dir }}/.env"
+    mode: "0644"
+
+- name: Copy Traefik config
+  copy:
+    src: files/traefik.yml
+    dest: "{{ docker_base_dir }}/traefik/traefik.yml"
+    mode: "0644"
+
+- name: Create acme.json
+  file:
+    path: "{{ docker_base_dir }}/traefik/acme.json"
+    state: touch
+    mode: "0600"
