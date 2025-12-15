@@ -1,11 +1,17 @@
-version: "3.9"
+networks:
+  homeassistant-network:
+    external: true
+  traefik-network:
+    external: true
 
 services:
 
   traefik:
-    image: traefik:v3.4
+    image: traefik:v3.6.4
     container_name: traefik
     restart: unless-stopped
+    networks:
+      - traefik-network
     ports:
       - "80:80"
       - "443:443"
@@ -15,30 +21,58 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/traefik.yml:ro
       - ./traefik/acme.json:/letsencrypt/acme.json
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:8082/ping","--spider"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     command:
-      - "--configFile=/traefik.yml"
+      - --configFile=/traefik.yml
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.cloud-vii.net`)"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "traefik.http.services.traefik.loadbalancer.passhostheader=true"
 
   homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2025.12
     container_name: homeassistant
+#    networks:
+#      - homeassistant-network
+#      - traefik-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
     network_mode: host
     privileged: true
+    cap_add:
+      - NET_ADMIN # Required for full Bluetooth functionality
+      - NET_RAW # Required for full Bluetooth functionality
     restart: unless-stopped
     volumes:
       - ./homeassistant:/config
       - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ha.rule=Host(`ha.cloud-vii.net`)"
+      - "traefik.http.routers.ha.rule=Host(`home.cloud-vii.net`)"
+      - "traefik.http.routers.ha.service=ha"
       - "traefik.http.routers.ha.entrypoints=websecure"
+#      - "traefik.http.services.ha.loadbalancer.server.port=8123"
       - "traefik.http.routers.ha.tls.certresolver=letsencrypt"
-      - "traefik.http.services.ha.loadbalancer.server.port=8123"
+      - "traefik.http.services.ha.loadbalancer.passhostheader=true"
+      - "traefik.http.services.ha.loadbalancer.server.url=http://192.168.1.5:8123"
+#      - "traefik.docker.network=traefik-network"
+    depends_on:
+      traefik:
+        condition: service_healthy
 
     # pihole:
     #   image: pihole/pihole:latest

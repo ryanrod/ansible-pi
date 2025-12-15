@@ -31,7 +31,7 @@
   copy:
     src: files/.env
     dest: "{{ docker_base_dir }}/.env"
-    mode: "0644"
+    mode: "0600"
 
 - name: Copy Traefik config
   copy:

@@ -1,14 +1,36 @@
 api:
   dashboard: true
 
-# entryPoints:
-#   web:
-#     address: ":80"
-#   websecure:
-#     address: ":443"
+ping:
+  entrypoint: ping
+
+log:
+  level: debug
+
+entryPoints:
+  ping:
+    address: ":8082"
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    asDefault: true
+    http:
+      tls:
+        domains:
+          main: cloud-vii.net
+          sans:
+            - '*.cloud-vii.net'
+        certresolver: letsencrypt
 
 providers:
   docker:
+    endpoint: unix:///var/run/docker.sock
     exposedByDefault: false
 
 certificatesResolvers:
@@ -18,4 +40,10 @@ certificatesResolvers:
       storage: /letsencrypt/acme.json
       dnsChallenge:
         provider: cloudflare
-        delayBeforeCheck: 10
+        delayBeforeCheck: 60
+        disablePropagationCheck: true
+        resolvers:
+          - cheryl.ns.cloudflare.com
+          - luke.ns.cloudflare.com
+global:
+  sendanonymoususage: false

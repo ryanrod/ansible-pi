@@ -59,10 +59,18 @@ If everything works, run the full suite:
 ansible-playbook -i inventory.yml main.yml -vv
 ```
 
-## Authors
+#### On the Node Device
 
-* Kacper Leśniara ([kacper.lesniara@gmail.com](mailto:kacper.lesniara@gmail.com))
+❗ Change variables in the `.env` to meet your requirements.
 
-## License
+💡 Note that the `.env` file and `configuration.yaml` file should be in the same directory as `docker-compose.yml`.
 
-This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) file for details
+Create networks for your services before deploying the configuration using the commands:
+
+`docker network create traefik-network`
+
+`docker network create homeassistant-network`
+
+Deploy using Docker Compose:
+
+`docker compose up -d`
