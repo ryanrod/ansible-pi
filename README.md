@@ -69,8 +69,6 @@ Create networks for your services before deploying the configuration using the c
 
 `docker network create traefik-network`
 
-`docker network create homeassistant-network`
-
 Deploy using Docker Compose:
 
 `docker compose up -d`

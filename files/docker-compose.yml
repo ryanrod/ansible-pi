@@ -1,6 +1,4 @@
 networks:
-  homeassistant-network:
-    external: true
   traefik-network:
     external: true
 
@@ -41,9 +39,6 @@ services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2025.12
     container_name: homeassistant
-#    networks:
-#      - homeassistant-network
-#      - traefik-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8123/"]
       interval: 10s
@@ -65,36 +60,40 @@ services:
       - "traefik.http.routers.ha.rule=Host(`home.cloud-vii.net`)"
       - "traefik.http.routers.ha.service=ha"
       - "traefik.http.routers.ha.entrypoints=websecure"
-#      - "traefik.http.services.ha.loadbalancer.server.port=8123"
       - "traefik.http.routers.ha.tls.certresolver=letsencrypt"
       - "traefik.http.services.ha.loadbalancer.passhostheader=true"
+      # Need to specify address and port because we are using host network and not docker network
       - "traefik.http.services.ha.loadbalancer.server.url=http://192.168.1.5:8123"
-#      - "traefik.docker.network=traefik-network"
     depends_on:
       traefik:
         condition: service_healthy
 
-    # pihole:
-    #   image: pihole/pihole:latest
-    #   container_name: pihole
-    #   restart: unless-stopped
-    #   ports:
-    #     - "53:53/tcp"
-    #     - "53:53/udp"
-    #   environment:
-    #     TZ: "America/New_York"
-    #     WEBPASSWORD: "changeme"
-    #   volumes:
-    #     - ./pihole/etc-pihole:/etc/pihole
-    #     - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
-    #   cap_add:
-    #     - NET_ADMIN
-    #   labels:
-    #     - "traefik.enable=true"
-    #     - "traefik.http.routers.pihole.rule=Host(`pihole.yourdomain.com`)"
-    #     - "traefik.http.routers.pihole.entrypoints=websecure"
-    #     - "traefik.http.routers.pihole.tls.certresolver=letsencrypt"
-    #     - "traefik.http.services.pihole.loadbalancer.server.port=80"
+  pihole:
+    image: pihole/pihole:2025.11.1
+    container_name: pihole
+    restart: unless-stopped
+    networks:
+      - traefik-network
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    environment:
+      TZ: "America/New_York"
+      FTLCONF_webserver_api_password: 'ihateads'
+      FTLCONF_dns_listeningMode: 'ALL'
+    volumes:
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+      - SYS_TIME
+      - SYS_NICE
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.cloud-vii.net`)"
+      - "traefik.http.routers.pihole.entrypoints=websecure"
+      - "traefik.http.routers.pihole.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
 
     # jellyfin:
     #   image: jellyfin/jellyfin:latest

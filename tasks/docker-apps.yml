@@ -50,3 +50,9 @@
     src: files/homeassistant.yaml
     dest: "{{ docker_base_dir }}/homeassistant/configuration.yaml"
     mode: "0644"
+
+- name: Copy pihole config
+  copy:
+    src: files/pihole.toml
+    dest: "{{ docker_base_dir }}/pihole/etc-pihole/pihole.toml"
+    mode: "0644"
