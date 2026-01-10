@@ -20,6 +20,7 @@
     - "{{ docker_base_dir }}/jellyfin/cache"
     - "{{ docker_base_dir }}/jellyfin/media"
     - "{{ docker_base_dir }}/traefik"
+    - "{{ docker_base_dir }}/wg-easy/etc-wireguard"
 
 - name: Copy docker-compose file
   copy:
