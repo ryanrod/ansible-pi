@@ -21,6 +21,9 @@
     - "{{ docker_base_dir }}/jellyfin/media"
     - "{{ docker_base_dir }}/traefik"
     - "{{ docker_base_dir }}/wg-easy/etc-wireguard"
+    - "{{ docker_base_dir }}/mosquitto/config"
+    - "{{ docker_base_dir }}/mosquitto/data"
+    - "{{ docker_base_dir }}/mosquitto/log"
 
 - name: Copy docker-compose file
   copy:
@@ -56,4 +59,10 @@
   copy:
     src: files/pihole.toml
     dest: "{{ docker_base_dir }}/pihole/etc-pihole/pihole.toml"
+    mode: "0644"
+
+- name: Copy Mosquitto config
+  copy:
+    src: files/mosquitto.conf
+    dest: "{{ docker_base_dir }}/mosquitto/config"
     mode: "0644"
