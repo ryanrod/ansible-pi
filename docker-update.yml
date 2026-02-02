@@ -1,0 +1,9 @@
+- name: Docker Update
+  hosts: vms
+  vars:
+    docker_base_dir: /opt/docker-apps
+
+  tasks:
+    - name: Docker Compose Apps
+      ansible.builtin.include_tasks:
+        file: tasks/docker-apps.yml

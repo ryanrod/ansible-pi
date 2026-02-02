@@ -4,9 +4,6 @@
     swap_size_mb: 1024
     git_user_email: "ryanrod@vt.edu"
     git_user_name: "Ryan Rodriguez"
-    tailscale_authkey: "<auth_key>"
-    tailscale_args: "--advertise-routes=192.168.0.0/24 --advertise-exit-node"
-    airsane_build_dir: "{{ ansible_env.HOME }}/Projects/AirSane-build/"
     usb_device_path: "/dev/sda1"
     usb_mount_path: "/media/usb-drive"
     docker_base_dir: /opt/docker-apps

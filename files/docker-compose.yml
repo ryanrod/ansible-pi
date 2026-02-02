@@ -95,7 +95,7 @@ services:
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
 
   wg-easy:
-    image: ghcr.io/wg-easy/wg-easy:15
+    image: ghcr.io/wg-easy/wg-easy:15.2.0
     container_name: wg-easy
     networks:
       - traefik-network
