@@ -24,6 +24,8 @@
     - "{{ docker_base_dir }}/mosquitto/config"
     - "{{ docker_base_dir }}/mosquitto/data"
     - "{{ docker_base_dir }}/mosquitto/log"
+    - "{{ docker_base_dir }}/gatus/config"
+    - "{{ docker_base_dir }}/gatus/data"
 
 - name: Copy docker-compose file
   copy:
@@ -65,4 +67,10 @@
   copy:
     src: files/mosquitto.conf
     dest: "{{ docker_base_dir }}/mosquitto/config"
+    mode: "0644"
+
+- name: Copy Gatus config
+  copy:
+    src: files/gatus.yaml
+    dest: "{{ docker_base_dir }}/gatus/config/config.yaml"
     mode: "0644"

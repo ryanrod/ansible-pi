@@ -138,6 +138,60 @@ services:
     environment:
       TZ: "America/New_York"
 
+  # uptime-kuma:
+  #   image: louislam/uptime-kuma:2.3.2
+  #   container_name: uptime-kuma
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:3001"  # This maps the container port "3001" to the host port "3001"
+  #   volumes:
+  #     - ./uptime-kuma/data:/app/data  # Configuring persistent storage
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   environment:
+  #     TZ: "America/New_York"
+  #     UMASK: 0022  # Set your file permissions manually
+  #   networks:
+  #     - traefik-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3001"]
+  #     interval: 30s
+  #     retries: 3
+  #     start_period: 10s
+  #     timeout: 5s
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.uptime-kuma.rule=Host(`status.cloud-vii.net`)"
+  #     - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
+  #     - "traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt"
+  #     - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
+
+  gatus:
+    image: twinproduction/gatus:v5.35.0
+    ports:
+      - "7777:8080"
+    cap_add:
+      - NET_RAW
+    volumes:
+      - ./gatus/config:/config
+      - ./gatus/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: "America/New_York"
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gatus.rule=Host(`status.cloud-vii.net`)"
+      - "traefik.http.routers.gatus.entrypoints=websecure"
+      - "traefik.http.routers.gatus.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gatus.loadbalancer.server.port=7777"
+
     # jellyfin:
     #   image: jellyfin/jellyfin:latest
     #   container_name: jellyfin

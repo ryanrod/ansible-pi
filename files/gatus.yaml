@@ -1,0 +1,45 @@
+storage:
+  type: sqlite
+  path: /data/data.db
+
+alerting:
+  mqtt:
+    broker: "tcp://mosquitto:1883"
+    topic: "gatus/alerts"
+    client-id: "gatus-monitor"
+  # custom:
+  #   url: "https://home.cloud-vii.net/api/webhook/gatus"
+  #   method: POST
+  #   headers:
+  #     Content-Type: application/json
+  #   body: |
+  #     {
+  #       "endpoint": "[ENDPOINT_NAME]",
+  #       "status": "[ALERT_TRIGGERED_OR_RESOLVED]",
+  #       "description": "[ENDPOINT_DESCRIPTION]"
+  #     }
+
+security:
+  basic:
+    username: "ryan"
+    password-bcrypt-base64: "JDJhJDEyJGZlS3dqeHhVdjFWUmx0ZmVMWks1VC5PNEx0empZbUlES1U4M21YRXlCd0dKbmhKd3pxR0RD"
+
+endpoints:
+  - name: WAN Connectivity
+    group: network
+    url: "icmp://1.1.1.1"
+    interval: 30s
+    conditions:
+      - "[CONNECTED] == true"
+    alerts:
+      - type: mqtt
+        description: "Internet connectivity lost"
+  - name: Pi-hole
+    group: infrastructure
+    url: "https://pihole.cloud-vii.net/admin/"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: mqtt
+        description: "Pi-hole unavailable"
