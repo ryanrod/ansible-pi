@@ -3,21 +3,9 @@ storage:
   path: /data/data.db
 
 alerting:
-  mqtt:
-    broker: "tcp://mosquitto:1883"
-    topic: "gatus/alerts"
-    client-id: "gatus-monitor"
-  # custom:
-  #   url: "https://home.cloud-vii.net/api/webhook/gatus"
-  #   method: POST
-  #   headers:
-  #     Content-Type: application/json
-  #   body: |
-  #     {
-  #       "endpoint": "[ENDPOINT_NAME]",
-  #       "status": "[ALERT_TRIGGERED_OR_RESOLVED]",
-  #       "description": "[ENDPOINT_DESCRIPTION]"
-  #     }
+  homeassistant:
+    url: "http://192.168.1.5:8123"  # URL of your HomeAssistant instance
+    token: "YOUR_LONG_LIVED_ACCESS_TOKEN"  # Long-lived access token from HomeAssistant
 
 security:
   basic:
@@ -28,18 +16,38 @@ endpoints:
   - name: WAN Connectivity
     group: network
     url: "icmp://1.1.1.1"
-    interval: 30s
+    interval: 60s
     conditions:
       - "[CONNECTED] == true"
     alerts:
-      - type: mqtt
-        description: "Internet connectivity lost"
+      - type: homeassistant
+        enabled: true
+        send-on-resolved: true
+        failure-threshold: 1
+        success-threshold: 1
+
   - name: Pi-hole
     group: infrastructure
     url: "https://pihole.cloud-vii.net/admin/"
-    interval: 30s
+    interval: 60s
     conditions:
       - "[STATUS] == 200"
     alerts:
-      - type: mqtt
-        description: "Pi-hole unavailable"
+      - type: homeassistant
+        enabled: true
+        send-on-resolved: true
+        failure-threshold: 2
+        success-threshold: 2
+
+  - name: Home Assistant
+    group: infrastructure
+    url: "https://home.cloud-vii.net"
+    interval: 60s
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: homeassistant
+        enabled: true
+        send-on-resolved: true
+        failure-threshold: 2
+        success-threshold: 2
