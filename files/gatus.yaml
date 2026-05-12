@@ -5,7 +5,7 @@ storage:
 alerting:
   homeassistant:
     url: "http://192.168.1.5:8123"  # URL of your HomeAssistant instance
-    token: "YOUR_LONG_LIVED_ACCESS_TOKEN"  # Long-lived access token from HomeAssistant
+    token: "${HA_TOKEN}"  # Long-lived access token from HomeAssistant
 
 security:
   basic:

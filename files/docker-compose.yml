@@ -152,6 +152,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       TZ: "America/New_York"
+      HA_TOKEN: ${HA_TOKEN}
     networks:
       - traefik-network
     labels:
