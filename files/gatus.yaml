@@ -15,21 +15,21 @@ security:
 endpoints:
   - name: WAN Connectivity
     group: network
-    url: "icmp://1.1.1.1"
-    interval: 60s
+    url: "http://connectivitycheck.gstatic.com/generate_204"
+    interval: 30s
     conditions:
-      - "[CONNECTED] == true"
+      - "[STATUS] == 204"
     alerts:
       - type: homeassistant
         enabled: true
         send-on-resolved: true
-        failure-threshold: 1
-        success-threshold: 1
+        failure-threshold: 2
+        success-threshold: 2
 
   - name: Pi-hole
     group: infrastructure
     url: "https://pihole.cloud-vii.net/admin/"
-    interval: 60s
+    interval: 30s
     conditions:
       - "[STATUS] == 200"
     alerts:
@@ -42,7 +42,7 @@ endpoints:
   - name: Home Assistant
     group: infrastructure
     url: "https://home.cloud-vii.net"
-    interval: 60s
+    interval: 30s
     conditions:
       - "[STATUS] == 200"
     alerts:
